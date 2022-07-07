@@ -5,14 +5,14 @@ class DisjointSet(object):
     def __init__(self):
         self.parents = {}
 
-    def get_root(self, word):
+    def get_root(self, w):
         words_traversed = []
-        while word in self.parents and self.parents[word] != word:
-            words_traversed.append(word)
-            word = self.parents[word]
+        while w in self.parents and self.parents[w] != w:
+            words_traversed.append(w)
+            w = self.parents[w]
         for word in words_traversed:
-            self.parents[word] = word
-        return word
+            self.parents[word] = w
+        return w
 
     def add_synonyms(self, word1, word2):
         if word1 not in self.parents:
@@ -26,9 +26,9 @@ class DisjointSet(object):
             word1_root, word2_root = word2_root, word1_root
         self.parents[word2_root] = word1_root
 
-    def are_synonymous(self, word1, word2):
-        root1 = self.get_root(word1)
-        root2 = self.get_root(word2)
+    def are_synonymous(self, w1, w2):
+        root1 = self.get_root(w1)
+        root2 = self.get_root(w2)
         return root1 == root2
 
 

@@ -94,3 +94,15 @@ if __name__ == "__main__":
             w.write("\n".join(result))
             w.write("\n")
             print(result)
+    f = open("./inputs/test.in.json")
+    data = json.load(f)
+    # print(json.dumps(data)) # for debugging only
+    with open("./outputs/test.out.txt", "w") as w:
+        ## Take the input and make the output
+        for testCase in data.get("testCases"):
+            result = synonym_queries(
+                testCase.get("dictionary"), testCase.get("queries")
+            )
+            w.write("\n".join(result))
+            w.write("\n")
+            # print(result) # for debugging only
