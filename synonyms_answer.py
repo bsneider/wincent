@@ -5,39 +5,38 @@ class DisjointSet(object):
     def __init__(self):
         self.parents = {}
 
-    def get_root(self, w):
+    def get_root(self, word):
         words_traversed = []
-        while w in self.parents and self.parents[w] != w:
-            words_traversed.append(w)
-            w = self.parents[w]
+        while word in self.parents and self.parents[word] != word:
+            words_traversed.append(word)
+            word = self.parents[word]
         for word in words_traversed:
-            self.parents[word] = w
-        return w
+            self.parents[word] = word
+        return word
 
-    def add_synonyms(self, w1, w2):
-        if w1 not in self.parents:
-            self.parents[w1] = w1
-        if w2 not in self.parents:
-            self.parents[w2] = w2
+    def add_synonyms(self, word1, word2):
+        if word1 not in self.parents:
+            self.parents[word1] = word1
+        if word2 not in self.parents:
+            self.parents[word2] = word2
 
-        w1_root = self.get_root(w1)
-        w2_root = self.get_root(w2)
-        if w1_root < w2_root:
-            w1_root, w2_root = w2_root, w1_root
-        self.parents[w2_root] = w1_root
+        word1_root = self.get_root(word1)
+        word2_root = self.get_root(word2)
+        if word1_root < word2_root:
+            word1_root, word2_root = word2_root, word1_root
+        self.parents[word2_root] = word1_root
 
-    def are_synonymous(self, w1, w2):
-        r1 = self.get_root(w1)
-        r2 = self.get_root(w2)
-        print(f"r1 {r1}, r2 {r2}")
-        return r1 == r2
+    def are_synonymous(self, word1, word2):
+        root1 = self.get_root(word1)
+        root2 = self.get_root(word2)
+        return root1 == root2
 
 
 def preprocess_synonyms(synonym_words):
-    ds = DisjointSet()
-    for w1, w2 in synonym_words:
-        ds.add_synonyms(w1.lower(), w2.lower())
-    return ds
+    disjoint_set = DisjointSet()
+    for word1, word2 in synonym_words:
+        disjoint_set.add_synonyms(word1.lower(), word2.lower())
+    return disjoint_set
 
 
 def synonym_queries(synonym_words, queries):
@@ -48,17 +47,17 @@ def synonym_queries(synonym_words, queries):
     synonyms = preprocess_synonyms(synonym_words)
 
     output = []
-    for q1, q2 in queries:
-        q1, q2 = q1.split(), q2.split()
-        if len(q1) != len(q2):
+    for query1, query2 in queries:
+        query1, query2 = query1.split(), query2.split()
+        if len(query1) != len(query2):
             output.append("different")
             continue
         result = "synonyms"
-        for i in range(len(q1)):
-            w1, w2 = q1[i].lower(), q2[i].lower()
-            if w1 == w2:
+        for i in range(len(query1)):
+            word1, word2 = query1[i].lower(), query2[i].lower()
+            if word1 == word2:
                 continue
-            elif synonyms.are_synonymous(w1, w2):
+            elif synonyms.are_synonymous(word1, word2):
                 continue
             result = "different"
             break
@@ -68,11 +67,10 @@ def synonym_queries(synonym_words, queries):
 
 if __name__ == "__main__":
     ## TODO change to take input from argvars for file names
-    f = open("./inputs/example.in.json")
-    expected_output = open("./outputs/example.out")
+    f = open("./inputs/test.in.json")
     data = json.load(f)
-    print(json.dumps(data))
-    with open("./outputs/example.txt", "w") as w:
+    # print(json.dumps(data)) # for debugging only
+    with open("./outputs/test.out.txt", "w") as w:
         ## Take the input and make the output
         for testCase in data.get("testCases"):
             result = synonym_queries(
@@ -80,17 +78,4 @@ if __name__ == "__main__":
             )
             w.write("\n".join(result))
             w.write("\n")
-            print(result)
-        f = open("./inputs/example_big.in.json")
-    expected_output = open("./outputs/example_big.out")
-    data = json.load(f)
-    print(json.dumps(data))
-    with open("./outputs/example_big.txt", "w") as w:
-        ## Take the input and make the output
-        for testCase in data.get("testCases"):
-            result = synonym_queries(
-                testCase.get("dictionary"), testCase.get("queries")
-            )
-            w.write("\n".join(result))
-            w.write("\n")
-            print(result)
+            # print(result) # for debugging only
