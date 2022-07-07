@@ -1,4 +1,4 @@
-ansible==2.10.1
+ansible==4.2.0
 ansible-base==2.10.2
 ansible-generator==2.1.4
 astroid==2.4.2
